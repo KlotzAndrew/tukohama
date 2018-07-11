@@ -11,7 +11,15 @@ type sequence struct {
 	ReturnValue float64
 }
 
-func GetSequences(matrix [][]float64) []sequence {
+type rate struct {
+	Value    float64
+	HasValue bool
+}
+
+func newRate(v float64) rate { return rate{v, true} }
+func newRateNoop() rate      { return rate{0, false} }
+
+func GetSequences(matrix [][]rate) []sequence {
 	var sequences []sequence
 	paths := getPaths(matrix)
 
@@ -23,19 +31,19 @@ func GetSequences(matrix [][]float64) []sequence {
 	return sequences
 }
 
-func returnValue(matrix [][]float64, path []int) float64 {
+func returnValue(matrix [][]rate, path []int) float64 {
 	value := float64(1)
 
 	for e := 0; e < len(path)-1; e++ {
 		i := path[e]
 		j := path[e+1]
-		value = value * matrix[i][j]
+		value = value * matrix[i][j].Value
 	}
 
 	return value
 }
 
-func getPaths(m [][]float64) [][]int {
+func getPaths(m [][]rate) [][]int {
 	matrix := toLog(m)
 	length := len(matrix)
 	pre := make([]int, length)
@@ -52,8 +60,8 @@ func getPaths(m [][]float64) [][]int {
 	for k := 0; k < length; k++ {
 		for i := 0; i < length; i++ {
 			for j := 0; j < length; j++ {
-				if (dist[i] + matrix[i][j]) < dist[j] {
-					dist[j] = dist[i] + matrix[i][j]
+				if isBetter(matrix, dist, i, j) {
+					dist[j] = dist[i] + matrix[i][j].Value
 					pre[j] = i
 				}
 			}
@@ -64,8 +72,8 @@ func getPaths(m [][]float64) [][]int {
 	cyclic := make([]bool, length)
 	for i := 0; i < length; i++ {
 		for j := 0; j < length; j++ {
-			if (dist[i] + matrix[i][j]) < dist[j] {
-				dist[j] = dist[i] + matrix[i][j]
+			if isBetter(matrix, dist, i, j) {
+				dist[j] = dist[i] + matrix[i][j].Value
 				cyclic[j] = true
 			}
 		}
@@ -92,13 +100,21 @@ func getPaths(m [][]float64) [][]int {
 	return paths
 }
 
-func toLog(matrix [][]float64) [][]float64 {
-	m := make([][]float64, len(matrix))
+func isBetter(matrix [][]rate, dist []float64, i, j int) bool {
+	if (matrix[i][j].HasValue == true) &&
+		(dist[i]+matrix[i][j].Value) < dist[j] {
+		return true
+	}
+	return false
+}
+
+func toLog(matrix [][]rate) [][]rate {
+	m := make([][]rate, len(matrix))
 	for i := 0; i < len(m); i++ {
-		m[i] = make([]float64, len(matrix[i]))
+		m[i] = make([]rate, len(matrix[i]))
 		copy(m[i], matrix[i])
 		for j := 0; j < len(m); j++ {
-			m[i][j] = -math.Log(m[i][j])
+			m[i][j].Value = -math.Log(m[i][j].Value)
 		}
 	}
 	return m
