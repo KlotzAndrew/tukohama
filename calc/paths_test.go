@@ -7,10 +7,10 @@ import (
 )
 
 func TestGetSequences(t *testing.T) {
-	matrix := [][]rate{
-		[]rate{newRate(1), newRate(2), newRate(4)},
-		[]rate{newRate(0.5), newRate(1), newRate(3)},
-		[]rate{newRate(0.25), newRate(0.5), newRate(1)},
+	matrix := [][]Rate{
+		[]Rate{NewRate(1), NewRate(2), NewRate(4)},
+		[]Rate{NewRate(0.5), NewRate(1), NewRate(3)},
+		[]Rate{NewRate(0.25), NewRate(0.5), NewRate(1)},
 	}
 	expected := []sequence{
 		sequence{[]int{0, 1, 2, 0}, float64(1.5)},
@@ -23,10 +23,10 @@ func TestGetSequences(t *testing.T) {
 }
 
 func TestNoArbitrage(t *testing.T) {
-	matrix := [][]rate{
-		[]rate{newRate(1), newRate(2), newRate(4)},
-		[]rate{newRate(0.5), newRate(1), newRate(2)},
-		[]rate{newRate(0.25), newRate(0.5), newRate(1)},
+	matrix := [][]Rate{
+		[]Rate{NewRate(1), NewRate(2), NewRate(4)},
+		[]Rate{NewRate(0.5), NewRate(1), NewRate(2)},
+		[]Rate{NewRate(0.25), NewRate(0.5), NewRate(1)},
 	}
 	var expected []sequence
 
@@ -35,10 +35,10 @@ func TestNoArbitrage(t *testing.T) {
 }
 
 func TestIncompleteGraph(t *testing.T) {
-	matrix := [][]rate{
-		[]rate{newRate(1), newRate(2), newRate(4)},
-		[]rate{newRate(0.5), newRate(1), newRate(3)},
-		[]rate{newRate(0.25), newRateNoop(), newRate(1)},
+	matrix := [][]Rate{
+		[]Rate{NewRate(1), NewRate(2), NewRate(4)},
+		[]Rate{NewRate(0.5), NewRate(1), NewRate(3)},
+		[]Rate{NewRate(0.25), NewRateNoop(), NewRate(1)},
 	}
 	expected := []sequence{
 		sequence{[]int{0, 1, 2, 0}, float64(1.5)},

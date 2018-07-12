@@ -11,15 +11,15 @@ type sequence struct {
 	ReturnValue float64
 }
 
-type rate struct {
+type Rate struct {
 	Value    float64
 	HasValue bool
 }
 
-func newRate(v float64) rate { return rate{v, true} }
-func newRateNoop() rate      { return rate{0, false} }
+func NewRate(v float64) Rate { return Rate{v, true} }
+func NewRateNoop() Rate      { return Rate{0, false} }
 
-func GetSequences(matrix [][]rate) []sequence {
+func GetSequences(matrix [][]Rate) []sequence {
 	var sequences []sequence
 	paths := getPaths(matrix)
 
@@ -31,7 +31,7 @@ func GetSequences(matrix [][]rate) []sequence {
 	return sequences
 }
 
-func returnValue(matrix [][]rate, path []int) float64 {
+func returnValue(matrix [][]Rate, path []int) float64 {
 	value := float64(1)
 
 	for e := 0; e < len(path)-1; e++ {
@@ -43,7 +43,7 @@ func returnValue(matrix [][]rate, path []int) float64 {
 	return value
 }
 
-func getPaths(m [][]rate) [][]int {
+func getPaths(m [][]Rate) [][]int {
 	matrix := toLog(m)
 	length := len(matrix)
 	pre := make([]int, length)
@@ -100,7 +100,7 @@ func getPaths(m [][]rate) [][]int {
 	return paths
 }
 
-func isBetter(matrix [][]rate, dist []float64, i, j int) bool {
+func isBetter(matrix [][]Rate, dist []float64, i, j int) bool {
 	if (matrix[i][j].HasValue == true) &&
 		(dist[i]+matrix[i][j].Value) < dist[j] {
 		return true
@@ -108,10 +108,10 @@ func isBetter(matrix [][]rate, dist []float64, i, j int) bool {
 	return false
 }
 
-func toLog(matrix [][]rate) [][]rate {
-	m := make([][]rate, len(matrix))
+func toLog(matrix [][]Rate) [][]Rate {
+	m := make([][]Rate, len(matrix))
 	for i := 0; i < len(m); i++ {
-		m[i] = make([]rate, len(matrix[i]))
+		m[i] = make([]Rate, len(matrix[i]))
 		copy(m[i], matrix[i])
 		for j := 0; j < len(m); j++ {
 			m[i][j].Value = -math.Log(m[i][j].Value)

@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"tukohama/calc"
+
 	"golang.org/x/net/html"
 )
 
@@ -14,7 +16,37 @@ type exchangeDiv struct {
 	buyValue     float64
 }
 
-func GetRateOffers(from string, to string) []float64 {
+func GetRateOffers(currencies map[int]string) [][]calc.Rate {
+	rateOffers := make([][]calc.Rate, len(currencies))
+
+	for i := 0; i < len(currencies); i++ {
+		rateOffers[i] = make([]calc.Rate, len(currencies))
+
+		for j := 0; j < len(currencies); j++ {
+			if i == j {
+				rateOffers[i][j] = calc.NewRateNoop()
+				continue
+			}
+			// offers := GetRateOffer(i, j)
+			avg := float64(10) // avgOffer(offers)
+			rateOffers[i][j] = calc.NewRate(avg)
+		}
+	}
+	return rateOffers
+}
+
+func avgOffer(arr []float64) float64 {
+	top := arr[0:5]
+	var sum float64 = 0
+	for _, v := range top {
+		sum += v
+	}
+	return (sum / float64(len(top)))
+}
+
+func GetRateOffer(fromI int, toI int) []float64 {
+	from := strconv.Itoa(fromI)
+	to := strconv.Itoa(toI)
 	url := tradeUrl(from, to)
 	response, _ := http.Get(url)
 	defer response.Body.Close()
