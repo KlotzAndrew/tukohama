@@ -1,9 +1,10 @@
-package fetcher
+package tradeapi
 
 import (
-	"golang.org/x/net/html"
 	"net/http"
 	"strconv"
+
+	"golang.org/x/net/html"
 )
 
 type exchangeDiv struct {

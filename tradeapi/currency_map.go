@@ -1,13 +1,14 @@
-package fetcher
+package tradeapi
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"net/http"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 var StaticCurrencyMap = map[int]string{
