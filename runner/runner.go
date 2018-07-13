@@ -63,8 +63,12 @@ func fetchOffers(i, j int, r Runner, results chan rateRes, wg *sync.WaitGroup) {
 			strconv.Itoa(r.currencyMap[i].Id),
 			strconv.Itoa(r.currencyMap[j].Id),
 		)
-		avg := avgOffer(offers)
-		results <- rateRes{x: i, y: j, rate: calc.NewRate(avg)}
+		if len(offers) > 0 {
+			avg := avgOffer(offers)
+			results <- rateRes{x: i, y: j, rate: calc.NewRate(avg)}
+		} else {
+			results <- rateRes{x: i, y: j, rate: calc.NewRateNoop()}
+		}
 	} else {
 		results <- rateRes{x: i, y: j, rate: calc.NewRateNoop()}
 	}

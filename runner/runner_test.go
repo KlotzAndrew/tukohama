@@ -23,6 +23,12 @@ func (m mockClient) GetRateOffer(i, j string) []float64 {
 	return []float64{a, b}
 }
 
+type mockNilClient struct{}
+
+func (m mockNilClient) GetRateOffer(i, j string) []float64 {
+	return []float64{}
+}
+
 func TestGetRateOffers(t *testing.T) {
 	runner := Runner{
 		tradeClient: mockClient{},
@@ -33,6 +39,17 @@ func TestGetRateOffers(t *testing.T) {
 		calc.Sequence{[]int{1, 2, 1}, float64(6.25)},
 		calc.Sequence{[]int{2, 1, 2}, float64(6.25)},
 	}
+	sequences := runner.Run()
+	assert.Equal(t, expected, sequences, "runner seqs wrong")
+}
+
+func TestGetRateOffersNoOffer(t *testing.T) {
+	runner := Runner{
+		tradeClient: mockNilClient{},
+		currencyMap: mockCurrencyMap,
+	}
+	var expected []calc.Sequence
+
 	sequences := runner.Run()
 	assert.Equal(t, expected, sequences, "runner seqs wrong")
 }
