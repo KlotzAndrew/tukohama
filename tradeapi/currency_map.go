@@ -11,30 +11,30 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var StaticCurrencyMap = map[int]string{
-	//1: "alteration",
-	2: "fusing",
-	3: "alchemy",
-	4: "chaos",
-	//5:  "gcp",
-	//6:  "exalted",
-	//7:  "chrome",
-	//8:  "jeweller",
-	//9:  "chance",
-	//10: "chisel",
-	//11: "scouring",
-	//12: "blessed",
-	//13: "regret",
-	//14: "regal",
-	//15: "divine",
-	//16: "vaal",
-	//17: "wisdom",
-	//18: "portal",
-	//19: "armour...",
-	//20: "whetst...",
-	//21: "bauble",
-	//22: "transmutty",
-	//23: "augment...",
+var StaticCurrencyMap = []Currency{
+	Currency{Id: 1, Name: "alteration"},
+	Currency{Id: 2, Name: "fusing"},
+	Currency{Id: 3, Name: "alchemy"},
+	Currency{Id: 4, Name: "chaos"},
+	Currency{Id: 5, Name: "gcp"},
+	Currency{Id: 6, Name: "exalted"},
+	Currency{Id: 7, Name: "chrome"},
+	Currency{Id: 8, Name: "jeweller"},
+	Currency{Id: 9, Name: "chance"},
+	Currency{Id: 10, Name: "chisel"},
+	Currency{Id: 11, Name: "scouring"},
+	Currency{Id: 12, Name: "blessed"},
+	Currency{Id: 13, Name: "regret"},
+	Currency{Id: 14, Name: "regal"},
+	Currency{Id: 15, Name: "divine"},
+	Currency{Id: 16, Name: "vaal"},
+	Currency{Id: 17, Name: "wisdom"},
+	Currency{Id: 18, Name: "portal"},
+	Currency{Id: 19, Name: "armour..."},
+	Currency{Id: 20, Name: "whetst..."},
+	Currency{Id: 21, Name: "bauble"},
+	Currency{Id: 22, Name: "transmutty"},
+	Currency{Id: 23, Name: "augment..."},
 }
 
 func getNumberName(i int) (string, bool) {
@@ -64,32 +64,32 @@ func tradeUrlInt(from int) string {
 	return "http://currency.poe.trade/search?league=Incursion&online=x&want=" + s + "&have=" + "4"
 }
 
-type currency struct {
-	id   int
-	name string
+type Currency struct {
+	Id   int
+	Name string
 }
 
-type byId []currency
+type byId []Currency
 
 func (s byId) Len() int           { return len(s) }
 func (s byId) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
-func (s byId) Less(i, j int) bool { return s[i].id < s[j].id }
+func (s byId) Less(i, j int) bool { return s[i].Id < s[j].Id }
 
-func goGetName(i int, results chan currency, wg *sync.WaitGroup) {
+func goGetName(i int, results chan Currency, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	name, isFound := getNumberName(i)
 	if isFound == true && name != "chaos" {
-		results <- currency{i, name}
+		results <- Currency{Id: i, Name: name}
 	}
 }
 
-func GetCurrencyMap() []currency {
-	var all []currency
-	all = append(all, currency{4, "chaos"})
+func GetCurrencyMap() []Currency {
+	var all []Currency
+	all = append(all, Currency{Id: 4, Name: "chaos"})
 	var wg sync.WaitGroup
 
-	results := make(chan currency, 100)
+	results := make(chan Currency, 100)
 
 	for i := 1; i < 24; i++ {
 		wg.Add(1)
@@ -105,7 +105,7 @@ func GetCurrencyMap() []currency {
 	sort.Sort(byId(all))
 
 	for _, v := range all {
-		fmt.Printf("%d: \"%s\",\n", v.id, v.name)
+		fmt.Printf("%d: \"%s\",\n", v.Id, v.Name)
 	}
 
 	return all

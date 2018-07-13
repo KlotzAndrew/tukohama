@@ -6,7 +6,7 @@ import (
 
 const inf = 2147483647
 
-type sequence struct {
+type Sequence struct {
 	Path        []int
 	ReturnValue float64
 }
@@ -19,12 +19,12 @@ type Rate struct {
 func NewRate(v float64) Rate { return Rate{v, true} }
 func NewRateNoop() Rate      { return Rate{0, false} }
 
-func GetSequences(matrix [][]Rate) []sequence {
-	var sequences []sequence
+func GetSequences(matrix [][]Rate) []Sequence {
+	var sequences []Sequence
 	paths := getPaths(matrix)
 
 	for _, path := range paths {
-		s := sequence{path, returnValue(matrix, path)}
+		s := Sequence{path, returnValue(matrix, path)}
 		sequences = append(sequences, s)
 	}
 
