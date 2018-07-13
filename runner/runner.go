@@ -3,6 +3,7 @@ package runner
 import (
 	"fmt"
 	"strconv"
+	"sync"
 	"tukohama/calc"
 	"tukohama/tradeapi"
 )
@@ -18,6 +19,7 @@ type Runner struct {
 
 func (r Runner) Run() []calc.Sequence {
 	rates := r.getRateOffers()
+	fmt.Println(rates)
 	sequences := calc.GetSequences(rates)
 
 	fmt.Println(sequences)
@@ -25,25 +27,47 @@ func (r Runner) Run() []calc.Sequence {
 }
 
 func (r Runner) getRateOffers() [][]calc.Rate {
-	rateOffers := make([][]calc.Rate, len(r.currencyMap))
+	size := len(r.currencyMap)
+	rateOffers := make([][]calc.Rate, size)
+	var wg sync.WaitGroup
+	results := make(chan rateRes, size*size)
 
-	for i := 0; i < len(r.currencyMap); i++ {
-		rateOffers[i] = make([]calc.Rate, len(r.currencyMap))
+	for i := 0; i < size; i++ {
+		rateOffers[i] = make([]calc.Rate, size)
 
-		for j := 0; j < len(r.currencyMap); j++ {
-			if i == j {
-				rateOffers[i][j] = calc.NewRateNoop()
-				continue
-			}
-			offers := r.tradeClient.GetRateOffer(
-				strconv.Itoa(r.currencyMap[i].Id),
-				strconv.Itoa(r.currencyMap[j].Id),
-			)
-			avg := avgOffer(offers)
-			rateOffers[i][j] = calc.NewRate(avg)
+		for j := 0; j < size; j++ {
+			wg.Add(1)
+			go fetchOffers(i, j, r, results, &wg)
 		}
 	}
+	wg.Wait()
+	close(results)
+
+	for c := range results {
+		rateOffers[c.x][c.y] = c.rate
+	}
+
 	return rateOffers
+}
+
+type rateRes struct {
+	x, y int
+	rate calc.Rate
+}
+
+func fetchOffers(i, j int, r Runner, results chan rateRes, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	if i != j {
+		offers := r.tradeClient.GetRateOffer(
+			strconv.Itoa(r.currencyMap[i].Id),
+			strconv.Itoa(r.currencyMap[j].Id),
+		)
+		avg := avgOffer(offers)
+		results <- rateRes{x: i, y: j, rate: calc.NewRate(avg)}
+	} else {
+		results <- rateRes{x: i, y: j, rate: calc.NewRateNoop()}
+	}
 }
 
 func avgOffer(arr []float64) float64 {
