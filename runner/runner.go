@@ -7,6 +7,10 @@ import (
 	"tukohama/tradeapi"
 )
 
+func New(tc tradeapi.Client, cm []tradeapi.Currency) Runner {
+	return Runner{tradeClient: tc, currencyMap: cm}
+}
+
 type Runner struct {
 	tradeClient tradeapi.Client
 	currencyMap []tradeapi.Currency
