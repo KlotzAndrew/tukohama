@@ -1,8 +1,11 @@
 package tradeapi
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 
 	"golang.org/x/net/html"
 )
@@ -21,7 +24,7 @@ type ConcreteClient struct{}
 
 func (c ConcreteClient) GetRateOffer(from, to string) []float64 {
 	url := tradeUrl(from, to)
-	response, _ := http.Get(url)
+	response := get(url)
 	defer response.Body.Close()
 
 	tokens := html.NewTokenizer(response.Body)
@@ -41,6 +44,35 @@ func (c ConcreteClient) GetRateOffer(from, to string) []float64 {
 			}
 		}
 	}
+}
+
+func get(url string) *http.Response {
+	retries := 0
+
+	response, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+
+	for response.StatusCode != 200 {
+		if retries > 5 {
+			panic("http request error!")
+		}
+
+		jitter := 1000 + rand.Intn(20)*50*(retries+1)
+		httpBackoff := time.Duration(jitter) * time.Millisecond
+		fmt.Printf("http backoff, retries: %d; time:%s\n", retries, httpBackoff.String())
+		time.Sleep(httpBackoff)
+
+		response, err = http.Get(url)
+		if err != nil {
+			panic(err)
+		}
+
+		retries += 1
+	}
+
+	return response
 }
 
 func tradeUrl(from, to string) string {

@@ -44,7 +44,7 @@ func getNumberName(i int) (string, bool) {
 
 	doc, err := goquery.NewDocumentFromReader(response.Body)
 	if err != nil {
-		// log.Fatal(err)
+		panic(err)
 	}
 
 	selectors := doc.Find(".currency-name")
