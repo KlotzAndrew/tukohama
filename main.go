@@ -33,13 +33,13 @@ func fullRun() {
 }
 
 func saveRates() {
-	runner := runner.New(
-		tradeapi.ConcreteClient{},
-		tradeapi.StaticCurrencyMap,
-	)
-	pwd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	runner.RatesToCsv(pwd + "/data")
+	// runner := runner.New(
+	// 	tradeapi.ConcreteClient{},
+	// 	tradeapi.StaticCurrencyMap,
+	// )
+	// pwd, err := os.Getwd()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// runner.RatesToCsv(pwd + "/data")
 }

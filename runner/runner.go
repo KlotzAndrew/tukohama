@@ -2,6 +2,7 @@ package runner
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"sync"
 
@@ -20,6 +21,11 @@ type Runner struct {
 
 func (r Runner) Run() []calc.Sequence {
 	rates := r.getRateOffers()
+	pwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	r.ratesToCsv(rates, pwd)
 	sequences := calc.GetSequences(rates)
 
 	// NOTE: output is stdout for now
