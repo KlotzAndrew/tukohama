@@ -11,8 +11,7 @@ import (
 	"tukohama/tradeapi"
 )
 
-func (r Runner) ratesToCsv(rates [][]calc.Rate, dir string) string {
-	file := newCsvFile(dir)
+func (r Runner) RatesToCsv(rates [][]calc.Rate, file *os.File) string {
 	defer file.Close()
 	w := csv.NewWriter(file)
 
@@ -51,7 +50,7 @@ func writeCsvRow(w *csv.Writer, curs []tradeapi.Currency, rates [][]calc.Rate) {
 	}
 }
 
-func newCsvFile(dir string) *os.File {
+func NewCsvFile(dir string) *os.File {
 	t := time.Now()
 	fileName := dir + "/data/rates-" + t.Format("20060102150405") + ".csv"
 

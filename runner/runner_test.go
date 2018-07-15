@@ -42,11 +42,10 @@ func TestGetRateOffers(t *testing.T) {
 		currencyMap: mockCurrencyMap,
 	}
 	expected := []calc.Sequence{
-		calc.Sequence{[]int{0, 1, 2, 0}, float64(1.5)},
 		calc.Sequence{[]int{1, 2, 1}, float64(1.5)},
 		calc.Sequence{[]int{2, 1, 2}, float64(1.5)},
 	}
-	sequences := runner.Run()
+	_, sequences := runner.Run()
 	assert.Equal(t, expected, sequences, "runner seqs wrong")
 }
 
@@ -57,7 +56,7 @@ func TestGetRateOffersNoOffer(t *testing.T) {
 	}
 	var expected []calc.Sequence
 
-	sequences := runner.Run()
+	_, sequences := runner.Run()
 	assert.Equal(t, expected, sequences, "runner seqs wrong")
 }
 
@@ -67,7 +66,9 @@ func TestSaveRates(t *testing.T) {
 		currencyMap: mockCurrencyMap,
 	}
 
-	filePath := runner.RatesToCsv("/tmp")
+	rates, _ := runner.Run()
+
+	filePath := runner.RatesToCsv(rates, NewCsvFile("/tmp"))
 	contents := fileContents(t, filePath)
 
 	pwd, err := os.Getwd()

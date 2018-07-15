@@ -25,11 +25,17 @@ func main() {
 }
 
 func fullRun() {
-	runner := runner.New(
+	r := runner.New(
 		tradeapi.ConcreteClient{},
 		tradeapi.StaticCurrencyMap,
 	)
-	runner.Run()
+	rates, sequences := r.Run()
+	pwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	r.RatesToCsv(rates, runner.NewCsvFile(pwd))
+	fmt.Println(len(sequences))
 }
 
 func saveRates() {

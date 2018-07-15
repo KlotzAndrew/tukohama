@@ -2,7 +2,6 @@ package runner
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"sync"
 
@@ -19,20 +18,15 @@ type Runner struct {
 	currencyMap []tradeapi.Currency
 }
 
-func (r Runner) Run() []calc.Sequence {
+func (r Runner) Run() ([][]calc.Rate, []calc.Sequence) {
 	rates := r.getRateOffers()
-	pwd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	r.ratesToCsv(rates, pwd)
 	sequences := calc.GetSequences(rates)
 
 	// NOTE: output is stdout for now
 	for _, sequence := range sequences {
 		fmt.Printf("seq: %s, rate: %g\n", tradeapi.SeqToNames(sequence.Path), sequence.ReturnValue)
 	}
-	return sequences
+	return rates, sequences
 }
 
 func (r Runner) getRateOffers() [][]calc.Rate {

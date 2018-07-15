@@ -13,7 +13,6 @@ func TestGetSequences(t *testing.T) {
 		[]Rate{NewRate(0.25), NewRate(0.5), NewRate(1)},
 	}
 	expected := []Sequence{
-		Sequence{[]int{0, 1, 2, 0}, float64(1.5)},
 		Sequence{[]int{1, 2, 1}, float64(1.5)},
 		Sequence{[]int{2, 1, 2}, float64(1.5)},
 	}
