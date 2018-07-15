@@ -43,7 +43,6 @@ func TestGetRateOffers(t *testing.T) {
 	}
 	expected := []calc.Sequence{
 		calc.Sequence{[]int{1, 2, 1}, float64(1.5)},
-		calc.Sequence{[]int{2, 1, 2}, float64(1.5)},
 	}
 	_, sequences := runner.Run()
 	assert.Equal(t, expected, sequences, "runner seqs wrong")

@@ -14,7 +14,6 @@ func TestGetSequences(t *testing.T) {
 	}
 	expected := []Sequence{
 		Sequence{[]int{1, 2, 1}, float64(1.5)},
-		Sequence{[]int{2, 1, 2}, float64(1.5)},
 	}
 
 	paths := GetSequences(matrix)
@@ -41,8 +40,6 @@ func TestIncompleteGraph(t *testing.T) {
 	}
 	expected := []Sequence{
 		Sequence{[]int{0, 1, 2, 0}, float64(1.5)},
-		Sequence{[]int{1, 2, 0, 1}, float64(1.5)},
-		Sequence{[]int{2, 0, 1, 2}, float64(1.5)},
 	}
 
 	paths := GetSequences(matrix)
@@ -58,8 +55,6 @@ func TestUntradableAsset(t *testing.T) {
 	}
 	expected := []Sequence{
 		Sequence{[]int{0, 1, 2, 0}, float64(1.0428)},
-		Sequence{[]int{1, 2, 0, 1}, float64(1.0428)},
-		Sequence{[]int{2, 0, 1, 2}, float64(1.0428)},
 	}
 
 	paths := GetSequences(matrix)

@@ -2,6 +2,7 @@ package calc
 
 import (
 	"math"
+	"strconv"
 )
 
 const inf = 2147483647
@@ -80,12 +81,19 @@ func getPaths(m [][]Rate) [][]int {
 	}
 
 	// calc sequences
+	paths := cyclicPaths(cyclic, pre)
+	return paths
+}
+
+func cyclicPaths(cyclic []bool, pre []int) [][]int {
 	var paths [][]int
+	pathPermutations := map[string]bool{}
+
 	for i := 0; i < len(cyclic); i++ {
 		if cyclic[i] != true {
 			continue
 		}
-		visited := make([]bool, length)
+		visited := make([]bool, len(cyclic))
 		var seq []int
 		p := i
 
@@ -95,12 +103,41 @@ func getPaths(m [][]Rate) [][]int {
 			p = pre[p]
 			if p == i {
 				seq = append([]int{i}, reverse(seq)...)
-				paths = append(paths, seq)
+				canAdd := canAddNewSeq(seq, pathPermutations)
+				if canAdd {
+					pathPermutations = addPerm(seq, pathPermutations)
+					paths = append(paths, seq)
+				}
 				continue
 			}
 		}
 	}
 	return paths
+}
+
+// NOTE: 2-1-2 is the same as 1-2-1
+func canAddNewSeq(seq []int, permuations map[string]bool) bool {
+	name := seqName(seq[0 : len(seq)-1])
+	return !permuations[name]
+}
+
+func addPerm(seq []int, permuations map[string]bool) map[string]bool {
+	path2x := append(seq, seq[1:]...)
+	endIndex := len(seq) - 1
+	for i := 0; i < len(seq)-1; i++ {
+		key := seqName(path2x[i:endIndex])
+		permuations[key] = true
+		endIndex += 1
+	}
+	return permuations
+}
+
+func seqName(seq []int) string {
+	var name string
+	for _, i := range seq {
+		name = name + strconv.Itoa(i) + "-"
+	}
+	return name
 }
 
 func isBetter(matrix [][]Rate, dist []float64, i, j int) bool {
