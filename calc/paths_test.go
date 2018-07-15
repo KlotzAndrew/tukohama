@@ -49,3 +49,20 @@ func TestIncompleteGraph(t *testing.T) {
 	paths := GetSequences(matrix)
 	assert.Equal(t, expected, paths, "sequences incorrect")
 }
+
+func TestUntradableAsset(t *testing.T) {
+	matrix := [][]Rate{
+		[]Rate{NewRate(1), NewRate(869), NewRate(46), NewRate(1633)},
+		[]Rate{NewRate(0.001), NewRate(1), NewRate(0.06), NewRateNoop()},
+		[]Rate{NewRate(0.02), NewRate(11), NewRate(1), NewRate(200)},
+		[]Rate{NewRateNoop(), NewRateNoop(), NewRateNoop(), NewRate(1)},
+	}
+	expected := []Sequence{
+		Sequence{[]int{0, 1, 2, 0}, float64(1.0428)},
+		Sequence{[]int{1, 2, 0, 1}, float64(1.0428)},
+		Sequence{[]int{2, 0, 1, 2}, float64(1.0428)},
+	}
+
+	paths := GetSequences(matrix)
+	assert.Equal(t, expected, paths, "sequences incorrect")
+}

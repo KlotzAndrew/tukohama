@@ -93,9 +93,12 @@ func getPaths(m [][]Rate) [][]int {
 			seq = append(seq, p)
 			visited[p] = true
 			p = pre[p]
+			if p == i {
+				seq = append([]int{i}, reverse(seq)...)
+				paths = append(paths, seq)
+				continue
+			}
 		}
-		seq = append([]int{i}, reverse(seq)...)
-		paths = append(paths, seq)
 	}
 	return paths
 }
