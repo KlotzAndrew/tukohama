@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
+
 	"tukohama/calc"
 	"tukohama/tradeapi"
 )

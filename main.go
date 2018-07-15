@@ -16,6 +16,8 @@ func main() {
 	switch *cmd {
 	case "full":
 		fullRun()
+	case "save-rates":
+		saveRates()
 	default:
 		fmt.Println("command required!")
 		os.Exit(1)
@@ -28,4 +30,16 @@ func fullRun() {
 		tradeapi.StaticCurrencyMap,
 	)
 	runner.Run()
+}
+
+func saveRates() {
+	runner := runner.New(
+		tradeapi.ConcreteClient{},
+		tradeapi.StaticCurrencyMap,
+	)
+	pwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	runner.RatesToCsv(pwd + "/data")
 }

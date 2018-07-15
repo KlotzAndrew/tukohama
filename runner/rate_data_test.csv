@@ -1,0 +1,4 @@
+rateMatrix,alteration,fusing,alchemy
+alteration,0,1.5,2
+fusing,1.5,0,2.5
+alchemy,2,2.5,0
