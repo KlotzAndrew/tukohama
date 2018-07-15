@@ -13,6 +13,7 @@ import (
 
 func (r Runner) RatesToCsv(dir string) string {
 	rates := r.getRateOffers()
+
 	fmt.Println(rates)
 
 	file := newCsvFile(dir)

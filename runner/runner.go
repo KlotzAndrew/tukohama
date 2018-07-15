@@ -71,7 +71,7 @@ func fetchOffers(i, j int, r Runner, results chan rateRes, wg *sync.WaitGroup) {
 			results <- rateRes{x: i, y: j, rate: calc.NewRateNoop()}
 		}
 	} else {
-		results <- rateRes{x: i, y: j, rate: calc.NewRateNoop()}
+		results <- rateRes{x: i, y: j, rate: calc.NewRate(1)}
 	}
 }
 
