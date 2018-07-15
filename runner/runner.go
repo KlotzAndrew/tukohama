@@ -20,10 +20,12 @@ type Runner struct {
 
 func (r Runner) Run() []calc.Sequence {
 	rates := r.getRateOffers()
-	fmt.Println(rates)
 	sequences := calc.GetSequences(rates)
 
-	fmt.Println(sequences)
+	// NOTE: output is stdout for now
+	for _, sequence := range sequences {
+		fmt.Printf("seq: %s, rate: %g\n", tradeapi.SeqToNames(sequence.Path), sequence.ReturnValue)
+	}
 	return sequences
 }
 

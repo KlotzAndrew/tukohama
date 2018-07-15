@@ -37,6 +37,18 @@ var StaticCurrencyMap = []Currency{
 	Currency{Id: 23, Name: "augment..."},
 }
 
+func SeqToNames(indexes []int) []string {
+	result := []string{}
+	for _, index := range indexes {
+		name := StaticCurrencyMap[index].Name
+		if name == "" {
+			panic("name not found!")
+		}
+		result = append(result, name)
+	}
+	return result
+}
+
 func getNumberName(i int) (string, bool) {
 	url := tradeUrlInt(i)
 	response, _ := http.Get(url)

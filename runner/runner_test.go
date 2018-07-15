@@ -20,9 +20,14 @@ var mockCurrencyMap = []tradeapi.Currency{
 type mockClient struct{}
 
 func (m mockClient) GetRateOffer(i, j string) []float64 {
-	a, _ := strconv.ParseFloat(i, 64)
-	b, _ := strconv.ParseFloat(j, 64)
-	return []float64{a, b}
+	a, _ := strconv.Atoi(i)
+	b, _ := strconv.Atoi(j)
+	values := [][][]float64{
+		{{1}, {2}, {4}},
+		{{0.5}, {1}, {3}},
+		{{0.25}, {0.5}, {1}},
+	}
+	return values[a-1][b-1]
 }
 
 type mockNilClient struct{}
@@ -37,9 +42,9 @@ func TestGetRateOffers(t *testing.T) {
 		currencyMap: mockCurrencyMap,
 	}
 	expected := []calc.Sequence{
-		calc.Sequence{[]int{0, 1, 2, 0}, float64(7.5)},
-		calc.Sequence{[]int{1, 2, 1}, float64(6.25)},
-		calc.Sequence{[]int{2, 1, 2}, float64(6.25)},
+		calc.Sequence{[]int{0, 1, 2, 0}, float64(1.5)},
+		calc.Sequence{[]int{1, 2, 1}, float64(1.5)},
+		calc.Sequence{[]int{2, 1, 2}, float64(1.5)},
 	}
 	sequences := runner.Run()
 	assert.Equal(t, expected, sequences, "runner seqs wrong")

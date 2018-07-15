@@ -76,7 +76,7 @@ func get(url string) *http.Response {
 }
 
 func tradeUrl(from, to string) string {
-	return "http://currency.poe.trade/search?league=Incursion&online=x&want=" + from + "&have=" + to
+	return "http://currency.poe.trade/search?league=Incursion&online=x&want=" + to + "&have=" + from
 }
 
 func findOfferDiv(t html.Token, from, to string) (float64, bool) {
@@ -84,10 +84,10 @@ func findOfferDiv(t html.Token, from, to string) (float64, bool) {
 	if t.Data == "div" {
 		var div exchangeDiv
 		for _, a := range t.Attr {
-			if a.Key == "data-sellcurrency" && a.Val == from {
+			if a.Key == "data-sellcurrency" && a.Val == to {
 				div.sellCurrency = a.Val
 			}
-			if a.Key == "data-buycurrency" && a.Val == to {
+			if a.Key == "data-buycurrency" && a.Val == from {
 				div.buyCurrency = a.Val
 			}
 			if a.Key == "data-sellvalue" {
@@ -99,7 +99,7 @@ func findOfferDiv(t html.Token, from, to string) (float64, bool) {
 				div.buyValue = f
 			}
 		}
-		if div.sellCurrency == from && div.buyCurrency == to {
+		if div.sellCurrency == to && div.buyCurrency == from {
 			return (div.sellValue / div.buyValue), true
 		}
 	}
